@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
+import paho.mqtt.client as mqtt
 import time
+import config
 
 GPIO.setmode(GPIO.BCM)
 PIR_PIN1 = 5
@@ -17,11 +19,27 @@ turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
 
 def lights_on():
         GPIO.output(RELAIS_1_GPIO, GPIO.LOW)
+        mqttClient.publish("home/lights/entrance/switch", "on") # Publish message to MQTT broker
         print("ON")
 
 def lights_off():
         GPIO.output(RELAIS_1_GPIO, GPIO.HIGH)
+        mqttClient.publish("home/lights/entrance/switch", "off") # Publish message to MQTT broker
         print("OFF")
+
+# Our "on message" event
+def messageFunction (client, userdata, message):
+        topic = str(message.topic)
+        message = str(message.payload.decode("utf-8"))
+        print(topic + message)
+
+mqttClient = mqtt.Client("lights_entrance") # Create a MQTT client object
+mqttClient.username_pw_set(config.username, password=config.password)
+mqttClient.connect(config.broker, 1883) # Connect to the Home Assistant
+mqttClient.subscribe("home/lights/entrance/switch") # Subscribe to the topic lights_entrance
+mqttClient.subscribe("home/lights/switch") # Subscribe to the topic lights
+mqttClient.on_message = messageFunction # Attach the messageFunction to subscription
+mqttClient.loop_start() # Start the MQTT client
 
 try:
         print("PIR Module Test (CTRL+C to exit)")
