@@ -19,12 +19,12 @@ turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
 
 def lights_on():
         GPIO.output(RELAIS_1_GPIO, GPIO.LOW)
-        mqttClient.publish("home/lights/entrance/switch", "on") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "on") # Publish message to MQTT broker
         print("ON")
 
 def lights_off():
         GPIO.output(RELAIS_1_GPIO, GPIO.HIGH)
-        mqttClient.publish("home/lights/entrance/switch", "off") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "off") # Publish message to MQTT broker
         print("OFF")
 
 # Our "on message" event
@@ -36,8 +36,8 @@ def messageFunction (client, userdata, message):
 mqttClient = mqtt.Client("lights_entrance") # Create a MQTT client object
 mqttClient.username_pw_set(config.username, password=config.password)
 mqttClient.connect(config.broker, 1883) # Connect to the Home Assistant
-mqttClient.subscribe("home/lights/entrance/switch") # Subscribe to the topic lights_entrance
-mqttClient.subscribe("home/lights/switch") # Subscribe to the topic lights
+mqttClient.subscribe("home/lights/entrance/state") # Subscribe to the topic lights/entrance
+mqttClient.subscribe("home/lights/state") # Subscribe to the topic lights
 mqttClient.on_message = messageFunction # Attach the messageFunction to subscription
 mqttClient.loop_start() # Start the MQTT client
 
@@ -54,7 +54,7 @@ try:
 
                 if timer > 0:
                         timer -= 1
-                        print(timer);
+                        print(timer)
 
                         # Motion detected
                         if current_state:
