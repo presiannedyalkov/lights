@@ -36,6 +36,7 @@ def messageFunction (client, userdata, message):
 mqttClient = mqtt.Client("lights_entrance") # Create a MQTT client object
 mqttClient.username_pw_set(config.username, password=config.password)
 mqttClient.connect(config.broker, 1883) # Connect to the Home Assistant
+mqttClient.publish("home/lights/entrance/config", '{"name": "lights_entrance", "device_class": "light", "state_topic": "home/lights/entrance/state"}') 
 mqttClient.subscribe("home/lights/entrance/state") # Subscribe to the topic lights_entrance
 mqttClient.subscribe("home/lights/state") # Subscribe to the topic lights
 mqttClient.on_message = messageFunction # Attach the messageFunction to subscription
