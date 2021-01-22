@@ -3,20 +3,7 @@ import paho.mqtt.client as mqtt
 import time
 import config
 
-GPIO.setmode(GPIO.BCM)
-PIR_PIN1 = 5
-#PIR_PIN2 = 4
-RELAIS_1_GPIO = 17
-timer = 0
-relay_state = False
-MOTION_INTERVAL = 60
-
-GPIO.setup(RELAIS_1_GPIO, GPIO.OUT) # GPIO output
-GPIO.setup(PIR_PIN1, GPIO.IN) # GPIO SENSOR 1 input
-#GPIO.setup(PIR_PIN2, GPIO.IN) # GPIO SENSOR 2 input
-turn_on = GPIO.output(RELAIS_1_GPIO, GPIO.LOW) # on
-turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
-
+# Functions
 def lights_on():
         GPIO.output(RELAIS_1_GPIO, GPIO.LOW)
         mqttClient.publish("home/lights/entrance/state", "ON") # Publish message to MQTT broker
@@ -36,10 +23,27 @@ def messageFunction (client, userdata, message):
         isSetTopic = topic == "home/lights/entrance/set" or topic == "home/lights/set"
 
         if isSetTopic and message == "ON":
-                lights_on()
+                switch_state = 1
         if isSetTopic and message == "OFF":
-                lights_off()
+                switch_state = 0
 
+# Configure GPIO
+GPIO.setmode(GPIO.BCM)
+PIR_PIN1 = 5
+#PIR_PIN2 = 4
+RELAIS_1_GPIO = 17
+timer = 0
+relay_state = False
+switch_state = 3
+MOTION_INTERVAL = 60
+
+GPIO.setup(RELAIS_1_GPIO, GPIO.OUT) # GPIO output
+GPIO.setup(PIR_PIN1, GPIO.IN) # GPIO SENSOR 1 input
+#GPIO.setup(PIR_PIN2, GPIO.IN) # GPIO SENSOR 2 input
+turn_on = GPIO.output(RELAIS_1_GPIO, GPIO.LOW) # on
+turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
+
+# Configure MQTT
 mqttClient = mqtt.Client("light_entrance") # Create a MQTT client object
 mqttClient.username_pw_set(config.username, password=config.password)
 mqttClient.connect(config.broker, 1883) # Connect to the Home Assistant
@@ -89,6 +93,17 @@ try:
                                         print("Lamp is on, turn off!")
                                         relay_state = False
                                         lights_off()
+
+                # Switch is set to ON
+                if switch_state == 1:
+                        timer = MOTION_INTERVAL
+                        switch_state = 3
+                        print("Switch is toggled! Reset Timer!")
+                # Switch is set to OFF
+                elif switch_state == 0:
+                        timer = 0
+                        switch_state = 3
+                        print("Switch is toggled! Reset Timer!")
 
 except KeyboardInterrupt:
         print("Quit")
