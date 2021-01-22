@@ -108,6 +108,7 @@ try:
                                 if relay_state is True:
                                         print("Lamp is on, turn off!")
                                         relay_state = False
+                                        timer = 0
                                         lights_off()
 
 except KeyboardInterrupt:
