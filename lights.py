@@ -19,12 +19,12 @@ turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
 
 def lights_on():
         GPIO.output(RELAIS_1_GPIO, GPIO.LOW)
-        mqttClient.publish("home/lights/entrance/state", "ON") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "on") # Publish message to MQTT broker
         print("ON")
 
 def lights_off():
         GPIO.output(RELAIS_1_GPIO, GPIO.HIGH)
-        mqttClient.publish("home/lights/entrance/state", "OFF") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "off") # Publish message to MQTT broker
         print("OFF")
 
 # Our "on message" event
@@ -33,12 +33,12 @@ def messageFunction (client, userdata, message):
         message = str(message.payload.decode("utf-8"))
         print(topic + message)
 
-mqttClient = mqtt.Client("lights_entrance") # Create a MQTT client object
+mqttClient = mqtt.Client("light_entrance") # Create a MQTT client object
 mqttClient.username_pw_set(config.username, password=config.password)
 mqttClient.connect(config.broker, 1883) # Connect to the Home Assistant
-mqttClient.publish("home/lights/entrance/config", '{"name": "lights_entrance", "device_class": "light", "state_topic": "home/lights/entrance/state"}') 
-mqttClient.subscribe("home/lights/entrance/state") # Subscribe to the topic lights_entrance
-mqttClient.subscribe("home/lights/state") # Subscribe to the topic lights
+mqttClient.publish("home/lights/entrance/config", '{"name": "light_entrance", "friendly_name": "Entrance Light", "state_topic": "home/lights/entrance/state"}') 
+mqttClient.subscribe("home/lights/entrance/set") # Subscribe to the topic lights/entrance
+mqttClient.subscribe("home/lights/set") # Subscribe to the topic lights
 mqttClient.on_message = messageFunction # Attach the messageFunction to subscription
 mqttClient.loop_start() # Start the MQTT client
 
