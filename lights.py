@@ -22,6 +22,8 @@ def messageFunction (client, userdata, message):
         
         isSetTopic = topic == "home/lights/entrance/set" or topic == "home/lights/set"
 
+        global switch_state
+        
         if isSetTopic and message == "ON":
                 switch_state = 1
         if isSetTopic and message == "OFF":
@@ -69,7 +71,7 @@ try:
                         print(timer)
 
                         # Motion detected
-                        if current_state:
+                        if current_state or switch_state == 1:
                                 # Reset timer
                                 timer = MOTION_INTERVAL
                                 print("Motion Detected! Reset Timer!")
