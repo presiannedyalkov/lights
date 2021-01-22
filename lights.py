@@ -72,7 +72,7 @@ try:
 
                         # Motion detected
                         if current_state:
-                                # Reset timer
+                                # Set timer on motion
                                 timer = MOTION_INTERVAL
                                 print("Motion Detected! Reset Timer!")
                         
@@ -82,11 +82,14 @@ try:
                                 relay_state = False
                                 # Reset switch
                                 switch_state = 3
+                                # Reset timer to 0
+                                timer = 0
                                 lights_off()
                         # Switch set to ON while ON
                         elif switch_state == 1:
                                 # Reset switch
                                 switch_state = 3
+                                # Set timer on switch
                                 timer = MOTION_INTERVAL
                                 print("Switch is toggled! Reset Timer!")
 
@@ -107,11 +110,10 @@ try:
                                         switch_state = 3
 
                         # Timer is 0 and there is no motion or switch is toggled
-                        elif current_state is False or switch_state == 0:
+                        else:
                                 if relay_state is True:
                                         print("Lamp is on, turn off!")
                                         relay_state = False
-                                        timer = 0
                                         lights_off()
 
 except KeyboardInterrupt:
