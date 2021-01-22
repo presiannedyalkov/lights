@@ -74,6 +74,8 @@ try:
                         if current_state or switch_state == 1:
                                 # Reset timer
                                 timer = MOTION_INTERVAL
+                                # Reset switch
+                                switch_state = 3
                                 print("Motion Detected! Reset Timer!")
 
                 # Timer is initiated or went to 0
@@ -99,13 +101,12 @@ try:
                 # Switch is set to ON
                 if switch_state == 1:
                         timer = MOTION_INTERVAL
-                        switch_state = 3
                         print("Switch is toggled! Reset Timer!")
                 # Switch is set to OFF
                 elif switch_state == 0:
                         timer = 0
                         switch_state = 3
-                        print("Switch is toggled! Reset Timer!")
+                        print("Switch is toggled! Null Timer!")
 
 except KeyboardInterrupt:
         print("Quit")
