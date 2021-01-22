@@ -92,7 +92,7 @@ try:
 
                 # Timer is initiated or went to 0
                 else:
-                        # Motion detected
+                        # Motion detected or switch is toggled
                         if current_state or switch_state == 1:
                                 if relay_state is False:
                                         print("Lamp is off, turn on!")
@@ -101,9 +101,12 @@ try:
 
                                 # Reset timer
                                 timer = MOTION_INTERVAL
-                                print("Motion Detected! Reset Timer!")
+                                if current_state:
+                                        print("Motion Detected! Reset Timer!")
+                                else:
+                                        switch_state = 3
 
-                        # Timer is 0 and there is no motion
+                        # Timer is 0 and there is no motion or switch is toggled
                         elif current_state is False or switch_state == 0:
                                 if relay_state is True:
                                         print("Lamp is on, turn off!")
