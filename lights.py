@@ -35,9 +35,9 @@ def messageFunction (client, userdata, message):
         
         isSetTopic = topic == "home/lights/entrance/set" or topic == "home/lights/set"
 
-        if topic == isSetTopic and message == "ON":
+        if isSetTopic and message == "ON":
                 lights_on()
-        if topic == isSetTopic and message == "OFF":
+        if isSetTopic and message == "OFF":
                 lights_off()
 
 mqttClient = mqtt.Client("light_entrance") # Create a MQTT client object
