@@ -31,7 +31,12 @@ def lights_off():
 def messageFunction (client, userdata, message):
         topic = str(message.topic)
         message = str(message.payload.decode("utf-8"))
-        print(topic + message)
+        print(topic + ": " + message)
+        
+        if message is "ON":
+                lights_on()
+        if message is "OFF":
+                lights_off()
 
 mqttClient = mqtt.Client("light_entrance") # Create a MQTT client object
 mqttClient.username_pw_set(config.username, password=config.password)
