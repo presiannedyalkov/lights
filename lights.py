@@ -19,12 +19,12 @@ turn_off = GPIO.output(RELAIS_1_GPIO, GPIO.HIGH) # off
 
 def lights_on():
         GPIO.output(RELAIS_1_GPIO, GPIO.LOW)
-        mqttClient.publish("home/lights/entrance/state", "on") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "ON") # Publish message to MQTT broker
         print("ON")
 
 def lights_off():
         GPIO.output(RELAIS_1_GPIO, GPIO.HIGH)
-        mqttClient.publish("home/lights/entrance/state", "off") # Publish message to MQTT broker
+        mqttClient.publish("home/lights/entrance/state", "OFF") # Publish message to MQTT broker
         print("OFF")
 
 # Our "on message" event
